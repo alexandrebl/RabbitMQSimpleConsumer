@@ -1,7 +1,8 @@
 ﻿using RabbitMQ.Client;
-using RabbitMQSimpleConsumer.Entity;
 using RabbitMQSimpleConsumer.Library;
 using System;
+using RabbitMQSimpleConnectionFactory.Entity;
+using RabbitMQSimpleConnectionFactory.Library;
 
 namespace RabbitMQSimpleConsumer {
 
