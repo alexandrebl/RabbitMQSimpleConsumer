@@ -13,7 +13,7 @@ namespace RabbitMQSimpleConsumer.Library {
     /// Responsável por consumo de fila
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Consumer<T> : BaseQueue {
+    public class Consumer<T> : BaseQueue, IConsumer<T> {
 
         /// <summary>
         /// Indica se a mensagem será removida ou não da fila
