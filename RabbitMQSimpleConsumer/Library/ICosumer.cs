@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace RabbitMQSimpleConsumer.Library {
+
     /// <summary>
     /// Responsável por consumo de fila
     /// </summary>
@@ -24,13 +24,7 @@ namespace RabbitMQSimpleConsumer.Library {
         /// </summary>
         void WatchInit(bool durable = true, bool exclusive = false, bool autoDelete = false, IDictionary<string, object> arguments = null);
 
-        /// <summary>
-        /// Cria o objeto consumidor
-        /// </summary>
-        void InitializeObject(bool durable = true, bool exclusive = false, bool autoDelete = false,
-            IDictionary<string, object> arguments = null, bool queueDeclare = false);
-
-        /// <summary>
+        /// <sumary>
         /// Remove a mensagem da fila
         /// </summary>
         /// <param name="deliveryTag"></param>
