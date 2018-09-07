@@ -10,7 +10,7 @@ namespace RabbitMQSimpleConsumer {
     /// Responsável por gerenciar publicação e o consumo no RabbitMQ
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class QueueManager<T> : IDisposable {
+    public class QueueManager<T> : IQueueManager<T>, IDisposable {
 
         /// <summary>
         /// Canal de comunicação com a fila
