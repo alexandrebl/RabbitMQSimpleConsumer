@@ -71,8 +71,6 @@ namespace RabbitMQSimpleConsumer.Library {
                     var data = JsonConvert.DeserializeObject<T>(message);
                     ReceiveMessage?.Invoke(data, ea.DeliveryTag);
                 } catch (Exception ex) {
-                    //ex.QueueMessage = Encoding.UTF8.GetString(ea.Body);
-                    //ex.QueueType = typeof(T);
                     OnReceiveMessageException?.Invoke(ex, ea.DeliveryTag);
                 }
             };
@@ -96,7 +94,7 @@ namespace RabbitMQSimpleConsumer.Library {
         /// <param name="deliveryTag"></param>
         /// <param name="requeued"></param>
         public void Nack(ulong deliveryTag, bool requeued = true) {
-            Channel.BasicNack(deliveryTag, false, requeued);
+            Channel.BasicReject(deliveryTag, requeued);
         }
     }
 }
