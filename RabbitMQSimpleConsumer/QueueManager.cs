@@ -27,15 +27,13 @@ namespace RabbitMQSimpleConsumer {
         /// </summary>
         private readonly string _queueName;
 
-        private readonly ChannelFactory _channelFactory;
-
+        
         /// <summary>
         /// Método construtor parametrizado
         /// </summary>
         /// <param name="queueName">Descrição da fila</param>
         public QueueManager(string queueName = null) {
             _queueName = queueName;
-            _channelFactory = new ChannelFactory();
         }
 
         /// <summary>
@@ -53,7 +51,7 @@ namespace RabbitMQSimpleConsumer {
         /// </summary>
         /// <param name="connectionSetting"></param>
         private void CreateChannel(ConnectionSetting connectionSetting) {
-            _channel = _channelFactory.Create(connectionSetting);
+            _channel = ChannelFactory.Create(connectionSetting);
         }
 
         /// <summary>
@@ -66,6 +64,22 @@ namespace RabbitMQSimpleConsumer {
             if (_queueName == null) throw new Exception($"Queue name is undefined");
 
             this.Consumer = new Consumer<T>(_channel, _queueName, prefetchCount, autoAck);
+            return this;
+        }
+
+        public QueueManager<T> WithConsumer(IModel channel, ushort prefetchCount = 1, bool autoAck = false) {
+            if (_queueName == null) throw new Exception($"Queue name is undefined");
+
+            this.Consumer = new Consumer<T>(channel, _queueName, prefetchCount, autoAck);
+            return this;
+        }
+
+        public QueueManager<T> WithConsumer(IConnection connection, ushort prefetchCount = 1, bool autoAck = false) {
+            if (_queueName == null) throw new Exception($"Queue name is undefined");
+
+            var channel = connection.CreateModel();
+
+            this.Consumer = new Consumer<T>(channel, _queueName, prefetchCount, autoAck);
             return this;
         }
 
