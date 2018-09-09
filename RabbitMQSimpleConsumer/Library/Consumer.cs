@@ -94,7 +94,7 @@ namespace RabbitMQSimpleConsumer.Library {
         /// <param name="deliveryTag"></param>
         /// <param name="requeued"></param>
         public void Nack(ulong deliveryTag, bool requeued = true) {
-            Channel.BasicReject(deliveryTag, requeued);
+            Channel.BasicNack(deliveryTag, false, requeued);
         }
     }
 }
