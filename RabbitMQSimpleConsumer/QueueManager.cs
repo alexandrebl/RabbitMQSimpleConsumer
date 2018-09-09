@@ -27,12 +27,15 @@ namespace RabbitMQSimpleConsumer {
         /// </summary>
         private readonly string _queueName;
 
+        private readonly ChannelFactory _channelFactory;
+
         /// <summary>
         /// Método construtor parametrizado
         /// </summary>
         /// <param name="queueName">Descrição da fila</param>
         public QueueManager(string queueName = null) {
             _queueName = queueName;
+            _channelFactory = new ChannelFactory();
         }
 
         /// <summary>
@@ -50,7 +53,7 @@ namespace RabbitMQSimpleConsumer {
         /// </summary>
         /// <param name="connectionSetting"></param>
         private void CreateChannel(ConnectionSetting connectionSetting) {
-            _channel = ChannelFactory.Create(connectionSetting);
+            _channel = _channelFactory.Create(connectionSetting);
         }
 
         /// <summary>
@@ -86,7 +89,7 @@ namespace RabbitMQSimpleConsumer {
             if (disposeManaged) {
                 this.Consumer?.Dispose();
                 this._channel?.Dispose();
-                ChannelFactory.CloseConnection();
+                _channelFactory.CloseConnection();
             }
 
             this._alreadyDisposed = true;
