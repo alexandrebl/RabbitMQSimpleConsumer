@@ -71,8 +71,6 @@ namespace RabbitMQSimpleConsumer.Library {
                     var data = JsonConvert.DeserializeObject<T>(message);
                     ReceiveMessage?.Invoke(data, ea.DeliveryTag);
                 } catch (Exception ex) {
-                    //ex.QueueMessage = Encoding.UTF8.GetString(ea.Body);
-                    //ex.QueueType = typeof(T);
                     OnReceiveMessageException?.Invoke(ex, ea.DeliveryTag);
                 }
             };
