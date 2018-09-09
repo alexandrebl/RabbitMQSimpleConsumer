@@ -103,7 +103,6 @@ namespace RabbitMQSimpleConsumer {
             if (disposeManaged) {
                 this.Consumer?.Dispose();
                 this._channel?.Dispose();
-                _channelFactory.CloseConnection();
             }
 
             this._alreadyDisposed = true;
