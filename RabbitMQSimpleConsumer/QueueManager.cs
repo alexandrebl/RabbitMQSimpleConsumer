@@ -27,6 +27,7 @@ namespace RabbitMQSimpleConsumer {
         /// </summary>
         private readonly string _queueName;
 
+        
         /// <summary>
         /// Método construtor parametrizado
         /// </summary>
@@ -66,6 +67,22 @@ namespace RabbitMQSimpleConsumer {
             return this;
         }
 
+        public QueueManager<T> WithConsumer(IModel channel, ushort prefetchCount = 1, bool autoAck = false) {
+            if (_queueName == null) throw new Exception($"Queue name is undefined");
+
+            this.Consumer = new Consumer<T>(channel, _queueName, prefetchCount, autoAck);
+            return this;
+        }
+
+        public QueueManager<T> WithConsumer(IConnection connection, ushort prefetchCount = 1, bool autoAck = false) {
+            if (_queueName == null) throw new Exception($"Queue name is undefined");
+
+            var channel = connection.CreateModel();
+
+            this.Consumer = new Consumer<T>(channel, _queueName, prefetchCount, autoAck);
+            return this;
+        }
+
         /// <summary>
         /// 'IDisposable' implementation.
         /// </summary>
@@ -86,7 +103,6 @@ namespace RabbitMQSimpleConsumer {
             if (disposeManaged) {
                 this.Consumer?.Dispose();
                 this._channel?.Dispose();
-                ChannelFactory.CloseConnection();
             }
 
             this._alreadyDisposed = true;
