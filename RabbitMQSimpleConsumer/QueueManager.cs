@@ -51,7 +51,7 @@ namespace RabbitMQSimpleConsumer {
         /// </summary>
         /// <param name="connectionSetting"></param>
         private void CreateChannel(ConnectionSetting connectionSetting) {
-            _channel = ChannelFactory.Create(connectionSetting);
+            _channel = new ChannelFactory(connectionSetting).Create();
         }
 
         /// <summary>
