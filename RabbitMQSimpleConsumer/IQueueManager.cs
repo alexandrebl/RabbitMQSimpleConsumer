@@ -1,8 +1,10 @@
 ﻿using RabbitMQSimpleConnectionFactory.Entity;
 using RabbitMQSimpleConsumer.Library;
 
-namespace RabbitMQSimpleConsumer {
-    public interface IQueueManager<T> {
+namespace RabbitMQSimpleConsumer
+{
+    public interface IQueueManager<T>
+    {
         /// <summary>
         /// Consumidor de mensagens
         /// </summary>
@@ -13,7 +15,7 @@ namespace RabbitMQSimpleConsumer {
         /// </summary>
         /// <param name="connectionSetting">Configurações de conexão</param>
         /// <returns>Instância de gerenciamento de fila com uma conexão com RabbitMQ</returns>
-        QueueManager<T> WithConnectionSetting(ConnectionSetting connectionSetting);
+        QueueManager<T> WithConnectionSetting(ConnectionSetting connectionSetting, string clientProvidedName = null);
 
         /// <summary>
         /// Atribui um consumidor ao gerenciador
