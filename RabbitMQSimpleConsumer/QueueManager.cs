@@ -4,18 +4,21 @@ using System;
 using RabbitMQSimpleConnectionFactory.Entity;
 using RabbitMQSimpleConnectionFactory.Library;
 
-namespace RabbitMQSimpleConsumer {
+namespace RabbitMQSimpleConsumer
+{
 
     /// <summary>
     /// Responsável por gerenciar publicação e o consumo no RabbitMQ
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class QueueManager<T> : IQueueManager<T>, IDisposable {
+    public class QueueManager<T> : IQueueManager<T>, IDisposable
+    {
 
         /// <summary>
         /// Canal de comunicação com a fila
         /// </summary>
         private IModel _channel;
+        private ChannelFactory _channelFactory;
 
         /// <summary>
         /// Consumidor de mensagens
@@ -27,12 +30,13 @@ namespace RabbitMQSimpleConsumer {
         /// </summary>
         private readonly string _queueName;
 
-        
+
         /// <summary>
         /// Método construtor parametrizado
         /// </summary>
         /// <param name="queueName">Descrição da fila</param>
-        public QueueManager(string queueName = null) {
+        public QueueManager(string queueName = null)
+        {
             _queueName = queueName;
         }
 
@@ -41,17 +45,18 @@ namespace RabbitMQSimpleConsumer {
         /// </summary>
         /// <param name="connectionSetting">Configurações de conexão</param>
         /// <returns>Instância de gerenciamento de fila com uma conexão com RabbitMQ</returns>
-        public QueueManager<T> WithConnectionSetting(ConnectionSetting connectionSetting) {
-            CreateChannel(connectionSetting);
+        public QueueManager<T> WithConnectionSetting(ConnectionSetting connectionSetting, string clientProvidedName = null)
+        {
+            this._channelFactory = new ChannelFactory(connectionSetting, clientProvidedName);
+            _channel = this._channelFactory.Create();
             return this;
         }
 
-        /// <summary>
-        /// Cria uma canal de comunicação com RabbitMQ
-        /// </summary>
-        /// <param name="connectionSetting"></param>
-        private void CreateChannel(ConnectionSetting connectionSetting) {
-            _channel = new ChannelFactory(connectionSetting).Create();
+        public QueueManager<T> WithChannelFactory(ChannelFactory channelFactory)
+        {
+            this._channelFactory = channelFactory;
+            _channel = this._channelFactory.Create();
+            return this;
         }
 
         /// <summary>
@@ -60,21 +65,24 @@ namespace RabbitMQSimpleConsumer {
         /// <param name="prefetchCount">Controla o número de mensagem recebidas</param>
         /// <param name="autoAck">Indica se a mensagem será removida ou não da fila</param>
         /// <returns>Instância de gerenciamento de fila com um consumidor</returns>
-        public QueueManager<T> WithConsumer(ushort prefetchCount = 1, bool autoAck = false) {
+        public QueueManager<T> WithConsumer(ushort prefetchCount = 1, bool autoAck = false)
+        {
             if (_queueName == null) throw new Exception($"Queue name is undefined");
 
             this.Consumer = new Consumer<T>(_channel, _queueName, prefetchCount, autoAck);
             return this;
         }
 
-        public QueueManager<T> WithConsumer(IModel channel, ushort prefetchCount = 1, bool autoAck = false) {
+        public QueueManager<T> WithConsumer(IModel channel, ushort prefetchCount = 1, bool autoAck = false)
+        {
             if (_queueName == null) throw new Exception($"Queue name is undefined");
 
             this.Consumer = new Consumer<T>(channel, _queueName, prefetchCount, autoAck);
             return this;
         }
 
-        public QueueManager<T> WithConsumer(IConnection connection, ushort prefetchCount = 1, bool autoAck = false) {
+        public QueueManager<T> WithConsumer(IConnection connection, ushort prefetchCount = 1, bool autoAck = false)
+        {
             if (_queueName == null) throw new Exception($"Queue name is undefined");
 
             var channel = connection.CreateModel();
@@ -86,7 +94,8 @@ namespace RabbitMQSimpleConsumer {
         /// <summary>
         /// 'IDisposable' implementation.
         /// </summary>
-        public void Dispose() {
+        public void Dispose()
+        {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -95,12 +104,14 @@ namespace RabbitMQSimpleConsumer {
         /// 'IDisposable' implementation.
         /// </summary>
         /// <param name="disposeManaged">Whether to dispose managed resources.</param>
-        protected virtual void Dispose(bool disposeManaged) {
+        protected virtual void Dispose(bool disposeManaged)
+        {
             // Return if already disposed.
             if (this._alreadyDisposed) return;
 
             // Release managed resources if needed.
-            if (disposeManaged) {
+            if (disposeManaged)
+            {
                 this.Consumer?.Dispose();
                 this._channel?.Dispose();
             }
